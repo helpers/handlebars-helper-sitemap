@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{{#if collections}}
+{{! multiple collections defined on "collections" }}
+{{#each collections as |collection|}}
+{{#collection @collection}}
+{{#each (filterItems (urlset items)) as |item|}}
+  {{url @item}}
+{{/each}}
+{{/collection}}
+{{/each}}
+{{else if sitemap.items}}
+{{! list of items defined on "sitemap.items" }}
+{{#each (filterItems (urlset sitemap.items)) as |item|}}
+  {{url @item}}
+{{/each}}
+{{else if items}}
+{{! list of items defined on "items" }}
+{{#each (filterItems (urlset items)) as |item|}}
+  {{url @item}}
+{{/each}}
+{{else if collection}}
+{{! single collection defined on "collection" }}
+{{#collection collection}}
+{{#each (filterItems (urlset items)) as |item|}}
+  {{url @item}}
+{{/each}}
+{{/collection}}
+{{else unless (greaterThan app.viewTypes.renderable.length 2)}}
+{{! this condition is met when "pages" and "files" (or whatever collection the sitemap is on) are the only _renderable_ collections }}
+{{#collection "pages"}}
+{{#each (filterItems (urlset items)) as |item|}}
+  {{url @item}}
+{{/each}}
+{{/collection}}
+{{else}}
+{{throw "helper-sitemap cannot find a collection to render"}}
+{{/if}}
+</urlset>
