@@ -2,8 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {{! multiple collections defined on "collections" }}
 {{#if collections}}
-{{#each collections as |collection|}}
-{{#collection @collection}}
+{{#each collections as |list|}}
+{{#collection list}}
 {{#each (filterItems (urlset items)) as |item|}}
   {{url @item}}
 {{/each}}
