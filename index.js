@@ -23,26 +23,6 @@ var templates = path.join.bind(path, __dirname, 'templates');
 
 helpers.collection = require('helper-collection');
 
-helpers.tag = function(name, context, options) {
-  if (typeof name !== 'string') {
-    throw new TypeError('expected name to be a string');
-  }
-
-  var text = '';
-
-  if (isObject(context) && context.hash) {
-    options = context;
-    context = null;
-  }
-
-  if (typeof context === 'string') {
-    text = context;
-  }
-
-  var html = toHtml(name, options.hash, text);
-  return safeString(html);
-};
-
 helpers.urlset = function(items, options) {
   if (Array.isArray(items)) {
     return items;
@@ -56,7 +36,7 @@ helpers.urlset = function(items, options) {
   return items;
 };
 
-helpers.loc = function(item, data) {
+helpers.loc = function(item, data, options) {
   if (typeof data.url !== 'string') {
     throw new TypeError('expected url to be a string');
   }
@@ -64,12 +44,7 @@ helpers.loc = function(item, data) {
     throw new TypeError('expected item.relative to be a string');
   }
 
-  let rel = item.relative;
-  if (item.data.dest && data.dest) {
-    var dest = path.relative(data.dest, item.data.dest);
-    rel = path.join(dest, rel);
-  }
-
+  var rel = destRelative.call(this, item, options);
   var res = url.resolve(data.url, rel);
   return safeString(toHtml('loc', res));
 };
@@ -91,10 +66,10 @@ helpers.priority = function(item, data) {
 helpers.url = function(item, options) {
   var data = assign({}, globalData(options), itemData(item));
   var text = '\n';
-  text += '    ' + helpers.loc(item, data) + '\n';
-  text += '    ' + helpers.lastmod(item, data) + '\n';
-  text += '    ' + helpers.changefreq(item, data) + '\n';
-  text += '    ' + helpers.priority(item, data) + '\n';
+  text += '    ' + helpers.loc.call(this, item, data, options) + '\n';
+  text += '    ' + helpers.lastmod.call(this, item, data, options) + '\n';
+  text += '    ' + helpers.changefreq.call(this, item, data, options) + '\n';
+  text += '    ' + helpers.priority.call(this, item, data, options) + '\n';
   text += '  ';
   return safeString(toHtml('url', text));
 };
@@ -119,15 +94,6 @@ helpers.throw = function(msg) {
  * Templates
  */
 
-Object.defineProperty(sitemap, 'collections', {
-  set: function() {
-    throw new Error('sitemap.collections is a getter and cannot be defined');
-  },
-  get: function() {
-    return fs.readFileSync(templates('collections.hbs'));
-  }
-});
-
 Object.defineProperty(sitemap, 'template', {
   set: function() {
     throw new Error('sitemap.template is a getter and cannot be defined');
@@ -143,15 +109,6 @@ Object.defineProperty(sitemap, 'layout', {
   },
   get: function() {
     return fs.readFileSync(templates('layout.hbs'));
-  }
-});
-
-Object.defineProperty(sitemap, 'content', {
-  set: function() {
-    throw new Error('sitemap.content is a getter and cannot be defined');
-  },
-  get: function() {
-    return fs.readFileSync(templates('content.hbs'));
   }
 });
 
@@ -176,6 +133,22 @@ Object.defineProperty(sitemap, 'page', {
 /**
  * Utils
  */
+
+function destRelative(item, options) {
+  if (typeof item.relative !== 'string') {
+    throw new TypeError('expected item.relative to be a string');
+  }
+
+  var context = this || options.data.root;
+  var dest = get(context, 'app.options.dest');
+  var dataDest = get(item, 'data.dest');
+  var folder = '';
+
+  if (dest && dataDest) {
+    folder = path.relative(dest, dataDest);
+  }
+  return path.join(folder, item.relative);
+}
 
 function globalData(options) {
   var sitemap = get(options, 'data.root.sitemap');
