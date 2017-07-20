@@ -21,9 +21,9 @@ var templates = path.join.bind(path, __dirname, 'templates');
  * Helpers
  */
 
-helpers.collection = require('helper-collection');
+helpers._collection = require('helper-collection');
 
-helpers.urlset = function(items, options) {
+helpers._urlset = function(items, options) {
   if (Array.isArray(items)) {
     return items;
   }
@@ -36,7 +36,7 @@ helpers.urlset = function(items, options) {
   return items;
 };
 
-helpers.loc = function(item, data, options) {
+helpers._loc = function(item, data, options) {
   if (typeof data.url !== 'string') {
     throw new TypeError('expected url to be a string');
   }
@@ -49,38 +49,38 @@ helpers.loc = function(item, data, options) {
   return safeString(toHtml('loc', res));
 };
 
-helpers.lastmod = function(item, data) {
+helpers._lastmod = function(item, data) {
   var date = data.lastModified || data.lastmod || item.stat && item.stat.mtime;
   var res = moment(date || new Date()).format('YYYY-MM-DD');
   return safeString(toHtml('lastmod', res));
 };
 
-helpers.changefreq = function(item, data) {
-  return safeString(toHtml('changefreq', data.changefreq || 'weekly'));
+helpers._changefreq = function(item, data) {
+  return safeString(toHtml('changefreq', String(data.changefreq || 'weekly')));
 };
 
-helpers.priority = function(item, data) {
-  return safeString(toHtml('priority', data.priority || '0.5'));
+helpers._priority = function(item, data) {
+  return safeString(toHtml('priority', String(data.priority || '0.5')));
 };
 
-helpers.url = function(item, options) {
+helpers._url = function(item, options) {
   var data = assign({}, globalData(options), itemData(item));
   var text = '\n';
-  text += '    ' + helpers.loc.call(this, item, data, options) + '\n';
-  text += '    ' + helpers.lastmod.call(this, item, data, options) + '\n';
-  text += '    ' + helpers.changefreq.call(this, item, data, options) + '\n';
-  text += '    ' + helpers.priority.call(this, item, data, options) + '\n';
+  text += '    ' + helpers._loc.call(this, item, data, options) + '\n';
+  text += '    ' + helpers._lastmod.call(this, item, data, options) + '\n';
+  text += '    ' + helpers._changefreq.call(this, item, data, options) + '\n';
+  text += '    ' + helpers._priority.call(this, item, data, options) + '\n';
   text += '  ';
   return safeString(toHtml('url', text));
 };
 
-helpers.filterItems = function(items) {
+helpers._filterItems = function(items) {
   return items.filter(function(item) {
     return item.stem !== 'sitemap' && item.data.sitemap !== false;
   });
 };
 
-helpers.greaterThan = function(a, b) {
+helpers._greaterThan = function(a, b) {
   return a > b;
 };
 

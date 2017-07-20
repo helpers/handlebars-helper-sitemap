@@ -132,9 +132,9 @@ describe('sitemap', function() {
       engine: 'hbs',
       content: [
         '{{#each collections}}',
-        '{{#collection .}}',
+        '{{#_collection .}}',
         '{{> url }}',
-        '{{/collection}}',
+        '{{/_collection}}',
         '{{/each}}'
       ].join('\n'),
     });
@@ -192,9 +192,9 @@ describe('sitemap', function() {
     app.partial('url.hbs', {
       content: [
         '{{#each collections}}',
-        '{{#collection .}}',
+        '{{#_collection .}}',
         '{{> urlset }}',
-        '{{/collection}}',
+        '{{/_collection}}',
         '{{/each}}'
       ].join('\n'),
     });
