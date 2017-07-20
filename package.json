@@ -25,19 +25,20 @@
     "get-value": "^2.0.6",
     "helper-collection": "^0.2.1",
     "html-tag": "^1.0.0",
-    "isobject": "^3.0.0",
-    "moment": "^2.17.1"
+    "isobject": "^3.0.1",
+    "moment": "^2.18.1"
   },
   "devDependencies": {
-    "assemble": "^0.23.0",
-    "delete": "^0.3.2",
+    "assemble": "^0.24.3",
+    "delete": "^1.1.0",
     "fs-exists-sync": "^0.1.0",
-    "gulp-format-md": "^0.1.11",
-    "mocha": "^3.2.0",
+    "gulp-format-md": "^1.0.0",
+    "mocha": "^3.4.2",
     "through2": "^2.0.3"
   },
   "keywords": [
     "compile",
+    "handlebars",
     "helper",
     "helpers",
     "render",
